@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>회원가입 및 로그인</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+    }
+    h2 {
+      color: #333;
+    }
+    form, .section {
+      background: #fff;
+      padding: 20px 30px;
+      margin: 20px 0;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      color: #333;
+    }
+    .input-field {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-top: 5px;
+    }
+    .msg {
+      font-size: 0.9em;
+      margin-left: 5px;
+    }
+    .submit-btn, button {
+      width: 100%;
+      padding: 10px;
+      background: #0066ff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      margin-top: 20px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .submit-btn:hover, button:hover {
+      background: #0052cc;
+    }
+    #logoutBtn {
+      background: #ff4d4d;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>회원가입</h2>
+  <form id="signupForm">
+    <label>아이디
+      <input type="text" name="username" id="username" class="input-field" />
+      <span id="dup-username" class="msg"></span>
+    </label>
+    <label>비밀번호
+      <input type="password" name="password" id="password" class="input-field" />
+    </label>
+    <label>비밀번호 확인
+      <input type="password" name="re-password" id="re-password" class="input-field" />
+      <span id="dup-password" class="msg"></span>
+    </label>
+    <label>별명 (한글 2~8자)
+      <input type="text" name="name" id="name" class="input-field" />
+      <span id="dup-name" class="msg"></span>
+    </label>
+
+    <label>휴대폰 번호 (예: 01012345678)
+      <input type="text" name="phone" id="phone" class="input-field" />
+      <button type="button" id="phoneNumberButton" class="submit-btn">인증번호 전송</button>
+      <span id="dup-phone" class="msg"></span>
+    </label>
+
+    <label>인증번호
+      <input type="text" id="confirmCode" class="input-field" />
+      <button type="button" id="confrimCodeButton" class="submit-btn">인증 확인</button>
+      <span id="dup-check" class="msg"></span>
+    </label>
+
+    <label>성별
+      <input type="radio" name="gender" value="M" checked> 남성
+      <input type="radio" name="gender" value="F"> 여성
+    </label>
+
+    <button type="submit" class="submit-btn">회원가입</button>
+  </form>
+
+  <h2>로그인</h2>
+  <form id="loginForm">
+    <label>아이디
+      <input type="text" id="login-username" class="input-field" required />
+    </label>
+    <label>비밀번호
+      <input type="password" id="login-password" class="input-field" required />
+    </label>
+    <button type="submit" class="submit-btn">로그인</button>
+  </form>
+
+  <div class="section">
+    <h2>SNS로 로그인</h2>
+    <button id="googleLogin">구글 로그인</button>
+    <button id="facebookLogin">페이스북 로그인</button>
+    <button id="appleLogin">애플 로그인</button>
+  </div>
+
+  <button id="logoutBtn" class="submit-btn" style="display:none">로그아웃</button>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
+    import {
+      getAuth,
+      signInWithPopup,
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
+      GoogleAuthProvider,
+      FacebookAuthProvider,
+      OAuthProvider,
+      signInWithPhoneNumber,
+      RecaptchaVerifier,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      getDoc,
+      updateDoc,
+      getDocs,
+      collection
+    } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCU_PKQe2NMUgNpvRFSqZagvbIj1yWDcWw",
+      authDomain: "login1-9a8e6.firebaseapp.com",
+      projectId: "login1-9a8e6",
+      storageBucket: "login1-9a8e6.appspot.com",
+      messagingSenderId: "908007506004",
+      appId: "1:908007506004:web:02e621f071f7eee5972dc1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth();
+    const db = getFirestore(app);
+    auth.languageCode = "ko";
+
+    const googleProvider = new GoogleAuthProvider();
+    const facebookProvider = new FacebookAuthProvider();
+    const appleProvider = new OAuthProvider('apple.com');
+
+    function redirectAfterLogin(user) {
+      document.getElementById("logoutBtn").style.display = "inline-block";
+      alert("로그인 성공: " + (user.displayName || user.email || user.phoneNumber));
+      window.location.href = "ChillElixir.html";
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      signOut(auth).then(() => {
+        alert("로그아웃 되었습니다.");
+        location.reload();
+      });
+    });
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById("logoutBtn").style.display = "inline-block";
+      }
+    });
+
+    document.getElementById("signupForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      const name = document.getElementById("name").value;
+      const phone = document.getElementById("phone").value;
+      const gender = document.querySelector("input[name='gender']:checked").value;
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        await setDoc(doc(db, "users", user.uid), {
+          email,
+          name,
+          phone,
+          gender,
+          uid: user.uid
+        });
+
+        redirectAfterLogin(user);
+      } catch (error) {
+        alert("회원가입 실패: " + error.message);
+      }
+    });
+
+    document.getElementById("loginForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("login-username").value;
+      const password = document.getElementById("login-password").value;
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          redirectAfterLogin(userCredential.user);
+        })
+        .catch((error) => {
+          alert("로그인 실패: " + error.message);
+        });
+    });
+
+    document.getElementById("googleLogin").addEventListener("click", () => {
+      signInWithPopup(auth, googleProvider)
+        .then((result) => redirectAfterLogin(result.user))
+        .catch((error) => alert("구글 로그인 실패: " + error.message));
+    });
+
+    document.getElementById("facebookLogin").addEventListener("click", () => {
+      signInWithPopup(auth, facebookProvider)
+        .then((result) => redirectAfterLogin(result.user))
+        .catch((error) => alert("페이스북 로그인 실패: " + error.message));
+    });
+
+    document.getElementById("appleLogin").addEventListener("click", () => {
+      signInWithPopup(auth, appleProvider)
+        .then((result) => redirectAfterLogin(result.user))
+        .catch((error) => alert("애플 로그인 실패: " + error.message));
+    });
+
+    window.recaptchaVerifier = new RecaptchaVerifier("phoneNumberButton", { size: "invisible" }, auth);
+
+    let confirmationResult;
+    document.getElementById("phoneNumberButton").addEventListener("click", (event) => {
+      event.preventDefault();
+      const phoneNumber = document.getElementById("phone").value;
+      const appVerifier = window.recaptchaVerifier;
+
+      signInWithPhoneNumber(auth, "+82" + phoneNumber, appVerifier)
+        .then((result) => {
+          confirmationResult = result;
+          alert("인증번호가 발송되었습니다.");
+        })
+        .catch((error) => alert("인증번호 전송 실패: " + error.message));
+    });
+
+    document.getElementById("confrimCodeButton").addEventListener("click", (event) => {
+      event.preventDefault();
+      const code = document.getElementById("confirmCode").value;
+      confirmationResult.confirm(code)
+        .then((result) => redirectAfterLogin(result.user))
+        .catch((error) => alert("인증 실패: " + error.message));
+    });
+  </script>
+
+</body>
+</html>

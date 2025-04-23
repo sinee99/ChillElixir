@@ -3,107 +3,142 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>회원가입 및 로그인</title>
+  <title>Chill Elixir - 로그인 및 회원가입</title>
+
+  <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- 스타일 -->
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f5f7fa;
+      background: url('https://images.unsplash.com/photo-1510626176961-4b57d4fbad03?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 40px;
+      padding: 50px;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
     }
+
+    .overlay {
+      background-color: rgba(0, 0, 0, 0.6);
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: -1;
+    }
+
     h2 {
-      color: #333;
+      color: #ffcc00;
+      margin-bottom: 20px;
+      text-align: center;
     }
+
     form, .section {
-      background: #fff;
-      padding: 20px 30px;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 30px 40px;
       margin: 20px 0;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-radius: 15px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
+      backdrop-filter: blur(8px);
+      position: relative;
+      z-index: 1;
     }
+
     label {
       display: block;
-      margin-top: 15px;
-      color: #333;
+      margin-top: 20px;
+      color: #e0e0e0;
+      font-size: 15px;
     }
+
     .input-field {
       width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      margin-top: 5px;
+      padding: 12px;
+      margin-top: 8px;
+      background: #333;
+      border: 1px solid #555;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
     }
-    .msg {
-      font-size: 0.9em;
-      margin-left: 5px;
-    }
+
     .submit-btn, button {
       width: 100%;
-      padding: 10px;
-      background: #0066ff;
-      color: white;
+      padding: 12px;
+      background: linear-gradient(135deg, #ffcc00, #ffaa00);
+      color: #1a1a1a;
       border: none;
-      border-radius: 6px;
-      margin-top: 20px;
+      border-radius: 8px;
+      margin-top: 25px;
       cursor: pointer;
+      font-weight: bold;
       font-size: 16px;
+      transition: all 0.3s ease;
+      position: relative;
     }
+
+    .submit-btn.loading::after, button.loading::after {
+      content: "⏳ 로딩 중...";
+      position: absolute;
+      left: 0; right: 0;
+      text-align: center;
+      color: #1a1a1a;
+    }
+
+    .submit-btn.loading, button.loading {
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
     .submit-btn:hover, button:hover {
-      background: #0052cc;
+      background: linear-gradient(135deg, #ffaa00, #ff8800);
     }
+
     #logoutBtn {
-      background: #ff4d4d;
+      background: linear-gradient(135deg, #ff4d4d, #cc0000);
+      color: white;
+    }
+
+    .sns-buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .sns-buttons button {
+      width: 80%;
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffcc00;
+      border: 1px solid #ffcc00;
+      margin: 8px 0;
+    }
+
+    .sns-buttons button:hover {
+      background: #ffcc00;
+      color: #1a1a1a;
+    }
+
+    .msg {
+      font-size: 0.85em;
+      margin-left: 5px;
+      color: #ff6666;
     }
   </style>
 </head>
+
 <body>
+  <div class="overlay"></div>
 
-  <h2>회원가입</h2>
-  <form id="signupForm">
-    <label>아이디
-      <input type="text" name="username" id="username" class="input-field" />
-      <span id="dup-username" class="msg"></span>
-    </label>
-    <label>비밀번호
-      <input type="password" name="password" id="password" class="input-field" />
-    </label>
-    <label>비밀번호 확인
-      <input type="password" name="re-password" id="re-password" class="input-field" />
-      <span id="dup-password" class="msg"></span>
-    </label>
-    <label>별명 (한글 2~8자)
-      <input type="text" name="name" id="name" class="input-field" />
-      <span id="dup-name" class="msg"></span>
-    </label>
-
-    <label>휴대폰 번호 (예: 01012345678)
-      <input type="text" name="phone" id="phone" class="input-field" />
-      <button type="button" id="phoneNumberButton" class="submit-btn">인증번호 전송</button>
-      <span id="dup-phone" class="msg"></span>
-    </label>
-
-    <label>인증번호
-      <input type="text" id="confirmCode" class="input-field" />
-      <button type="button" id="confrimCodeButton" class="submit-btn">인증 확인</button>
-      <span id="dup-check" class="msg"></span>
-    </label>
-
-    <label>성별
-      <input type="radio" name="gender" value="M" checked> 남성
-      <input type="radio" name="gender" value="F"> 여성
-    </label>
-
-    <button type="submit" class="submit-btn">회원가입</button>
-  </form>
-
+  <!-- 로그인 -->
   <h2>로그인</h2>
   <form id="loginForm">
-    <label>아이디
+    <label>아이디 (이메일)
       <input type="text" id="login-username" class="input-field" required />
     </label>
     <label>비밀번호
@@ -112,15 +147,48 @@
     <button type="submit" class="submit-btn">로그인</button>
   </form>
 
-  <div class="section">
+  <!-- SNS 로그인 -->
+  <div class="section sns-buttons">
     <h2>SNS로 로그인</h2>
-    <button id="googleLogin">구글 로그인</button>
-    <button id="facebookLogin">페이스북 로그인</button>
-    <button id="appleLogin">애플 로그인</button>
+    <button id="googleLogin">구글로 로그인</button>
+    <button id="facebookLogin">페이스북으로 로그인</button>
+    <button id="appleLogin">애플로 로그인</button>
   </div>
 
-  <button id="logoutBtn" class="submit-btn" style="display:none">로그아웃</button>
+  <!-- 회원가입 -->
+  <h2>회원가입</h2>
+  <form id="signupForm">
+    <label>아이디 (이메일)
+      <input type="text" name="username" id="username" class="input-field" />
+    </label>
+    <label>비밀번호
+      <input type="password" name="password" id="password" class="input-field" />
+    </label>
+    <label>비밀번호 확인
+      <input type="password" name="re-password" id="re-password" class="input-field" />
+    </label>
+    <label>별명 (한글 2~8자)
+      <input type="text" name="name" id="name" class="input-field" />
+    </label>
+    <label>휴대폰 번호 (예: 1012345678)
+      <input type="text" name="phone" id="phone" class="input-field" />
+      <button type="button" id="phoneNumberButton" class="submit-btn">인증번호 전송</button>
+    </label>
+    <label>인증번호
+      <input type="text" id="confirmCode" class="input-field" />
+      <button type="button" id="confrimCodeButton" class="submit-btn">인증 확인</button>
+    </label>
+    <label>성별
+      <input type="radio" name="gender" value="M" checked> 남성
+      <input type="radio" name="gender" value="F"> 여성
+    </label>
+    <button type="submit" class="submit-btn">회원가입</button>
+  </form>
 
+  <!-- 로그아웃 버튼 -->
+  <button id="logoutBtn" class="submit-btn" style="display:none; max-width:420px;">로그아웃</button>
+
+  <!-- Firebase 및 JS 동작 -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
@@ -137,15 +205,10 @@
       onAuthStateChanged,
       signOut
     } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-
     import {
       getFirestore,
       doc,
-      setDoc,
-      getDoc,
-      updateDoc,
-      getDocs,
-      collection
+      setDoc
     } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -186,8 +249,20 @@
       }
     });
 
+    function setLoading(button, isLoading) {
+      if (isLoading) {
+        button.classList.add('loading');
+      } else {
+        button.classList.remove('loading');
+      }
+    }
+
+    // 회원가입
     document.getElementById("signupForm").addEventListener("submit", async (e) => {
       e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]');
+      setLoading(btn, true);
+
       const email = document.getElementById("username").value;
       const password = document.getElementById("password").value;
       const name = document.getElementById("name").value;
@@ -209,45 +284,48 @@
         redirectAfterLogin(user);
       } catch (error) {
         alert("회원가입 실패: " + error.message);
+      } finally {
+        setLoading(btn, false);
       }
     });
 
+    // 로그인
     document.getElementById("loginForm").addEventListener("submit", (e) => {
       e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]');
+      setLoading(btn, true);
+
       const email = document.getElementById("login-username").value;
       const password = document.getElementById("login-password").value;
+
       signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           redirectAfterLogin(userCredential.user);
         })
         .catch((error) => {
           alert("로그인 실패: " + error.message);
-        });
+        })
+        .finally(() => setLoading(btn, false));
     });
 
-    document.getElementById("googleLogin").addEventListener("click", () => {
-      signInWithPopup(auth, googleProvider)
+    function snsLogin(provider, btnId) {
+      const btn = document.getElementById(btnId);
+      setLoading(btn, true);
+      signInWithPopup(auth, provider)
         .then((result) => redirectAfterLogin(result.user))
-        .catch((error) => alert("구글 로그인 실패: " + error.message));
-    });
+        .catch((error) => alert(provider.providerId + " 로그인 실패: " + error.message))
+        .finally(() => setLoading(btn, false));
+    }
 
-    document.getElementById("facebookLogin").addEventListener("click", () => {
-      signInWithPopup(auth, facebookProvider)
-        .then((result) => redirectAfterLogin(result.user))
-        .catch((error) => alert("페이스북 로그인 실패: " + error.message));
-    });
-
-    document.getElementById("appleLogin").addEventListener("click", () => {
-      signInWithPopup(auth, appleProvider)
-        .then((result) => redirectAfterLogin(result.user))
-        .catch((error) => alert("애플 로그인 실패: " + error.message));
-    });
+    document.getElementById("googleLogin").addEventListener("click", () => snsLogin(googleProvider, "googleLogin"));
+    document.getElementById("facebookLogin").addEventListener("click", () => snsLogin(facebookProvider, "facebookLogin"));
+    document.getElementById("appleLogin").addEventListener("click", () => snsLogin(appleProvider, "appleLogin"));
 
     window.recaptchaVerifier = new RecaptchaVerifier("phoneNumberButton", { size: "invisible" }, auth);
 
     let confirmationResult;
-    document.getElementById("phoneNumberButton").addEventListener("click", (event) => {
-      event.preventDefault();
+    document.getElementById("phoneNumberButton").addEventListener("click", (e) => {
+      e.preventDefault();
       const phoneNumber = document.getElementById("phone").value;
       const appVerifier = window.recaptchaVerifier;
 
@@ -259,8 +337,8 @@
         .catch((error) => alert("인증번호 전송 실패: " + error.message));
     });
 
-    document.getElementById("confrimCodeButton").addEventListener("click", (event) => {
-      event.preventDefault();
+    document.getElementById("confrimCodeButton").addEventListener("click", (e) => {
+      e.preventDefault();
       const code = document.getElementById("confirmCode").value;
       confirmationResult.confirm(code)
         .then((result) => redirectAfterLogin(result.user))

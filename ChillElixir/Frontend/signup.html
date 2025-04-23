@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chill Elixir - 회원가입</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    /* 기존 스타일 유지 */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url('https://images.unsplash.com/photo-1510626176961-4b57d4fbad03?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 50px;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+    .overlay {
+      background-color: rgba(0, 0, 0, 0.6);
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: -1;
+    }
+    h2 {
+      color: #ffcc00;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    form {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 30px 40px;
+      margin: 20px 0;
+      border-radius: 15px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+      width: 100%;
+      max-width: 420px;
+      backdrop-filter: blur(8px);
+      position: relative;
+      z-index: 1;
+    }
+    label {
+      display: block;
+      margin-top: 20px;
+      color: #e0e0e0;
+      font-size: 15px;
+    }
+    .input-field {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      background: #333;
+      border: 1px solid #555;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+    }
+    .submit-btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #ffcc00, #ffaa00);
+      color: #1a1a1a;
+      border: none;
+      border-radius: 8px;
+      margin-top: 25px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+    .submit-btn:hover {
+      background: linear-gradient(135deg, #ffaa00, #ff8800);
+    }
+    .msg {
+      font-size: 0.85em;
+      margin-left: 5px;
+      color: #ff6666;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+  <h2>회원가입</h2>
+  <form id="signupForm">
+    <label>아이디 (이메일)
+      <input type="text" name="username" id="username" class="input-field" />
+      <div class="msg" id="msg-username"></div>
+    </label>
+    <label>비밀번호
+      <input type="password" name="password" id="password" class="input-field" />
+      <div class="msg" id="msg-password"></div>
+    </label>
+    <label>비밀번호 확인
+      <input type="password" name="re-password" id="re-password" class="input-field" />
+      <div class="msg" id="msg-re-password"></div>
+    </label>
+    <label>닉네임 (한글 2~8자)
+      <input type="text" name="name" id="name" class="input-field" />
+      <div class="msg" id="msg-name"></div>
+    </label>
+    <label>성별
+      <input type="radio" name="gender" value="M" checked /> 남성
+      <input type="radio" name="gender" value="F" /> 여성
+    </label>
+    <button type="submit" class="submit-btn">회원가입</button>
+  </form>
+
+  <div style="text-align:center; margin-top:15px;">
+    <a href="login.html" style="color:#ffcc00; text-decoration:underline;">로그인</a>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCU_PKQe2NMUgNpvRFSqZagvbIj1yWDcWw",
+      authDomain: "login1-9a8e6.firebaseapp.com",
+      projectId: "login1-9a8e6",
+      storageBucket: "login1-9a8e6.appspot.com",
+      messagingSenderId: "908007506004",
+      appId: "1:908007506004:web:02e621f071f7eee5972dc1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const db = getFirestore(app);
+    auth.languageCode = "ko";
+
+    function validateSignupForm() {
+      let valid = true;
+      const fields = [
+        { id: "username", msg: "이메일을 입력해주세요." },
+        { id: "password", msg: "비밀번호를 입력해주세요." },
+        { id: "re-password", msg: "비밀번호 확인을 입력해주세요." },
+        { id: "name", msg: "닉네임을 입력해주세요." }
+      ];
+      fields.forEach(({ id, msg }) => {
+        const input = document.getElementById(id);
+        const messageBox = document.getElementById("msg-" + id);
+        if (!input.value.trim()) {
+          messageBox.textContent = msg;
+          valid = false;
+        } else {
+          messageBox.textContent = "";
+        }
+      });
+      const pw = document.getElementById("password").value;
+      const repw = document.getElementById("re-password").value;
+      if (pw && repw && pw !== repw) {
+        document.getElementById("msg-re-password").textContent = "비밀번호가 일치하지 않습니다.";
+        valid = false;
+      }
+      return valid;
+    }
+
+    function redirectAfterLogin(user) {
+      alert("회원가입 성공! 환영합니다 " + (user.email || user.uid));
+      window.location.href = "login.html";
+    }
+
+    function setLoading(button, isLoading) {
+      if (isLoading) {
+        button.classList.add('loading');
+      } else {
+        button.classList.remove('loading');
+      }
+    }
+
+    document.getElementById("signupForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!validateSignupForm()) return;
+      const btn = e.target.querySelector('button[type="submit"]');
+      setLoading(btn, true);
+      const email = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      const name = document.getElementById("name").value;
+      const gender = document.querySelector("input[name='gender']:checked").value;
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        await setDoc(doc(db, "users", user.uid), {
+          email,
+          name,
+          gender,
+          uid: user.uid
+        });
+        redirectAfterLogin(user);
+      } catch (error) {
+        alert("회원가입 실패: " + error.message);
+      } finally {
+        setLoading(btn, false);
+      }
+    });
+  </script>
+</body>
+</html>

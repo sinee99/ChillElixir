@@ -3,12 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chill Elixir - 로그인 및 회원가입</title>
-
-  <!-- jQuery -->
+  <title>Chill Elixir - 로그인</title>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-  <!-- 스타일 -->
+  <!--스타일-->
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -131,15 +128,12 @@
     }
   </style>
 </head>
-
 <body>
   <div class="overlay"></div>
-
-  <!-- 로그인 -->
   <h2>로그인</h2>
   <form id="loginForm">
     <label>아이디 (이메일)
-      <input type="text" name="username" id="username" class="input-field" />
+      <input type="text" name="username" id="login-username" class="input-field" />
       <div class="msg" id="msg-username"></div>
     </label>
     <label>비밀번호
@@ -147,8 +141,10 @@
     </label>
     <button type="submit" class="submit-btn">로그인</button>
   </form>
+  <div style="text-align:center; margin-top:15px;">
+    <a href="signup.html" style="color:#ffcc00; text-decoration:underline;">회원가입</a>
+  </div>
 
-  <!-- SNS 로그인 -->
   <div class="section sns-buttons">
     <h2>SNS로 로그인</h2>
     <button id="googleLogin">구글로 로그인</button>
@@ -156,40 +152,9 @@
     <button id="appleLogin">애플로 로그인</button>
   </div>
 
-  <!-- 회원가입 -->
-  <h2>회원가입</h2>
-  <form id="signupForm">
-    <label>아이디 (이메일)
-      <input type="text" name="username" id="username" class="input-field" />
-    </label>
-    <label>비밀번호
-      <input type="password" name="password" id="password" class="input-field" />
-    </label>
-    <label>비밀번호 확인
-      <input type="password" name="re-password" id="re-password" class="input-field" />
-    </label>
-    <label>별명 (한글 2~8자)
-      <input type="text" name="name" id="name" class="input-field" />
-    </label>
-    <label>휴대폰 번호 (예: 1012345678)
-      <input type="text" name="phone" id="phone" class="input-field" />
-      <button type="button" id="phoneNumberButton" class="submit-btn">인증번호 전송</button>
-    </label>
-    <label>인증번호
-      <input type="text" id="confirmCode" class="input-field" />
-      <button type="button" id="confrimCodeButton" class="submit-btn">인증 확인</button>
-    </label>
-    <label>성별
-      <input type="radio" name="gender" value="M" checked> 남성
-      <input type="radio" name="gender" value="F"> 여성
-    </label>
-    <button type="submit" class="submit-btn">회원가입</button>
-  </form>
-
-  <!-- 로그아웃 버튼 -->
   <button id="logoutBtn" class="submit-btn" style="display:none; max-width:420px;">로그아웃</button>
 
-  <!-- Firebase 및 JS 동작 -->
+  <!-- Firebase 및 JS -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
@@ -236,61 +201,7 @@
       alert("로그인 성공: " + (user.displayName || user.email || user.phoneNumber));
       window.location.href = "ChillElixir.html";
     }
-
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-      signOut(auth).then(() => {
-        alert("로그아웃 되었습니다.");
-        location.reload();
-      });
-    });
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        document.getElementById("logoutBtn").style.display = "inline-block";
-      }
-    });
-
-    function setLoading(button, isLoading) {
-      if (isLoading) {
-        button.classList.add('loading');
-      } else {
-        button.classList.remove('loading');
-      }
-    }
-
-    // 회원가입
-    document.getElementById("signupForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const btn = e.target.querySelector('button[type="submit"]');
-      setLoading(btn, true);
-
-      const email = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
-      const name = document.getElementById("name").value;
-      const phone = document.getElementById("phone").value;
-      const gender = document.querySelector("input[name='gender']:checked").value;
-
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-
-        await setDoc(doc(db, "users", user.uid), {
-          email,
-          name,
-          phone,
-          gender,
-          uid: user.uid
-        });
-
-        redirectAfterLogin(user);
-      } catch (error) {
-        alert("회원가입 실패: " + error.message);
-      } finally {
-        setLoading(btn, false);
-      }
-    });
-
-    // 로그인
+        // 로그인
     document.getElementById("loginForm").addEventListener("submit", (e) => {
       e.preventDefault();
       const btn = e.target.querySelector('button[type="submit"]');
@@ -345,7 +256,7 @@
         .then((result) => redirectAfterLogin(result.user))
         .catch((error) => alert("인증 실패: " + error.message));
     });
+    // ...Firebase 초기화 및 로그인 관련 코드만 남김...
   </script>
-
 </body>
 </html>

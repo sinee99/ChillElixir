@@ -50,10 +50,12 @@
       <section id="categories">
         <h2 class="text-2xl font-semibold mb-4">📂 카테고리별 보기</h2>
         <div class="flex flex-wrap gap-4">
-          <button class="bg-blue-100 text-blue-700 px-4 py-2 rounded">소주</button>
-          <button class="bg-yellow-100 text-yellow-700 px-4 py-2 rounded">맥주</button>
+          <button class="bg-blue-100 text-blue-700 px-4 py-2 rounded">칵테일</button>
+          <a href="beers.html" target="_blank" class="bg-yellow-100 text-yellow-700 px-4 py-2 rounded flex items-center justify-center">
+            맥주
+          </a>          
           <button class="bg-red-100 text-red-700 px-4 py-2 rounded">와인</button>
-          <button class="bg-green-100 text-green-700 px-4 py-2 rounded">막걸리</button>
+          <button class="bg-green-100 text-green-700 px-4 py-2 rounded">전통주</button>
           <button class="bg-purple-100 text-purple-700 px-4 py-2 rounded">위스키</button>
         </div>
       </section>
@@ -85,10 +87,13 @@
           </div>
         </div>
       </section>
-
+      <!-- 섹션: 맥주 목록 -->
+      <section id="beerList" class="mt-6 hidden">
+        <h2 class="text-2xl font-semibold mb-4">🍺 맥주 목록</h2>
+        <div id="beerContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
+      </section>
     </main>
   </div>
-
   <!-- 푸터 -->
   <footer class="bg-white text-center text-sm text-gray-500 py-6 mt-10 border-t">
     &copy; 2025 주류 대시보드. 모든 권리 보유.

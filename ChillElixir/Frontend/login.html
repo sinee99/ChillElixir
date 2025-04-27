@@ -199,7 +199,7 @@
     function redirectAfterLogin(user) {
       document.getElementById("logoutBtn").style.display = "inline-block";
       alert("로그인 성공: " + (user.displayName || user.email || user.phoneNumber));
-      window.location.href = "ChillElixir.html";
+      window.location.href = "main.html";
     }
 
     document.getElementById("logoutBtn").addEventListener("click", () => {

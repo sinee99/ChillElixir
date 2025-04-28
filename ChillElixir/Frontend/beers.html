@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 </head>
+
 <body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
 
   <!-- 헤더 -->
@@ -25,6 +27,32 @@
     </div>
   </main>
 
+  <!-- 모달 -->
+  <div id="beerModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div id="modalContent" class="bg-white rounded-2xl shadow-2xl p-6 w-[600px] max-h-[90vh] overflow-y-auto relative">
+      <button id="closeModal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+
+      <div class="flex flex-col items-center">
+        <img id="modalImage" src="" alt="맥주 이미지" class="w-full h-60 object-cover rounded-lg mb-4">
+
+        <h2 id="modalName" class="text-2xl font-bold mb-2 text-center"></h2>
+
+        <div class="text-gray-700 text-sm mb-1">
+          <strong>종류:</strong> <span id="modalClass"></span>
+        </div>
+        <div class="text-gray-700 text-sm mb-3">
+          <strong>국가:</strong> <span id="modalCountry"></span>
+        </div>
+
+        <div class="bg-gray-100 w-full p-4 rounded-lg shadow-inner max-h-40 overflow-y-auto">
+          <p id="modalDescription" class="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
   <!-- 푸터 -->
   <footer class="bg-white text-center text-sm text-gray-500 py-6 border-t">
     &copy; 2025 Chill Elixir. 모든 권리 보유.
@@ -34,11 +62,11 @@
     // Firebase 초기화
     const firebaseConfig = {
       apiKey: "AIzaSyAB2O8tod2AEOqXuBkSor3OSQ8e3HfmAnQ",
-        authDomain: "chillelixir-e8c93.firebaseapp.com",
-        projectId: "chillelixir-e8c93",
-        storageBucket: "chillelixir-e8c93.appspot.com",
-        messagingSenderId: "1234567890",
-        appId: "1234567890"
+      authDomain: "chillelixir-e8c93.firebaseapp.com",
+      projectId: "chillelixir-e8c93",
+      storageBucket: "chillelixir-e8c93.appspot.com",
+      messagingSenderId: "1234567890",
+      appId: "1234567890"
     };
 
     firebase.initializeApp(firebaseConfig);
@@ -62,23 +90,56 @@
 
       beers.forEach(beer => {
         const card = document.createElement('div');
-        card.className = 'bg-white rounded-xl shadow p-4 flex flex-col items-center';
+        card.className = 'bg-white rounded-xl shadow p-4 flex flex-col items-center cursor-pointer hover:shadow-lg transition';
 
         const imageUrl = beer.image && beer.image.startsWith('http') ? beer.image : 'https://placehold.co/600x400';
-
 
         card.innerHTML = `
           <img src="${imageUrl}" alt="${beer.beer_kor_name}" class="w-24 h-24 object-cover rounded mb-2">
           <h3 class="font-bold text-lg">${beer.beer_kor_name}</h3>
         `;
 
+        card.addEventListener('click', () => openModal(beer));
         container.appendChild(card);
       });
     }
+
+    // 모달 열기
+    function openModal(beer) {
+      document.getElementById('modalImage').src = beer.image && beer.image.startsWith('http') ? beer.image : 'https://placehold.co/600x400';
+      document.getElementById('modalName').textContent = beer.beer_kor_name || '이름 없음';
+      document.getElementById('modalClass').textContent = beer.class || '정보 없음';
+      document.getElementById('modalCountry').textContent = beer.country || '정보 없음';
+      document.getElementById('modalDescription').textContent = beer.description || '설명 없음';
+
+      document.getElementById('beerModal').classList.remove('hidden');
+    }
+
+    // 모달 닫기
+    function closeModal() {
+      document.getElementById('beerModal').classList.add('hidden');
+    }
+
+    document.getElementById('closeModal').addEventListener('click', closeModal);
+
+    // ESC 키로 모달 닫기
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+
+    // 배경 클릭시 모달 닫기
+    document.getElementById('beerModal').addEventListener('click', (e) => {
+      if (e.target.id === 'beerModal') {
+        closeModal();
+      }
+    });
 
     // 시작
     fetchBeerData();
   </script>
 
 </body>
+
 </html>

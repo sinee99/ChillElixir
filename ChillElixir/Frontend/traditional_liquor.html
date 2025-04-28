@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>전통주 목록</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+  <!-- Firebase SDK 추가 -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
+
+  <!-- 헤더 -->
+  <header class="bg-white shadow p-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold">🍶 전통주 목록</h1>
+    <a href="main.html" class="text-blue-500">홈으로</a>
+  </header>
+
+  <!-- 메인 콘텐츠 -->
+  <main class="flex-1 p-6">
+    <div id="liquorContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <!-- 전통주 카드가 여기에 들어옵니다 -->
+    </div>
+  </main>
+
+  <!-- 푸터 -->
+  <footer class="bg-white text-center text-sm text-gray-500 py-6 border-t">
+    &copy; 2025 Chill Elixir. 모든 권리 보유.
+  </footer>
+
+  <script>
+    // Firebase 초기화
+    const firebaseConfig = {
+      apiKey: "AIzaSyAB2O8tod2AEOqXuBkSor3OSQ8e3HfmAnQ",
+      authDomain: "chillelixir-e8c93.firebaseapp.com",
+      projectId: "chillelixir-e8c93",
+      storageBucket: "chillelixir-e8c93.appspot.com",
+      messagingSenderId: "1234567890",
+      appId: "1234567890"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Firestore에서 전통주 데이터 불러오기
+    async function fetchLiquorData() {
+      try {
+        const snapshot = await db.collection('tradi_liquor').get();
+        const liquors = snapshot.docs.map(doc => doc.data());
+        renderLiquors(liquors);
+      } catch (error) {
+        console.error('전통주 데이터를 불러오지 못했습니다:', error);
+      }
+    }
+
+    // 전통주 카드 렌더링 함수
+    function renderLiquors(liquors) {
+      const container = document.getElementById('liquorContainer');
+      container.innerHTML = '';
+
+      liquors.forEach(liquor => {
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-xl shadow p-4 flex flex-col items-center';
+
+        const imageUrl = liquor.image && liquor.image.startsWith('http') ? liquor.image : 'https://placehold.co/600x400';
+
+        card.innerHTML = `
+          <img src="${imageUrl}" alt="${liquor.제품명}" class="w-24 h-24 object-cover rounded mb-2">
+          <h3 class="font-bold text-lg">${liquor.제품명}</h3>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    // 시작
+    fetchLiquorData();
+  </script>
+
+</body>
+</html>

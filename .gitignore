@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pkl
+*.pt
+*.h5
+
+# Jupyter
+.ipynb_checkpoints
+
+# Logs
+*.log
+
+# FastAPI
+.env
+firebase_key.json
+tmp_*.jpg
+
+# React Native / Expo
+node_modules/
+.expo/
+.expo-shared/
+*.apk
+*.keystore
+*.gradle
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Dataset & Model Checkpoints
+dataset/species/*
+dataset/nose/*
+!dataset/species/README.md
+!dataset/nose/README.md
+model_training/__pycache__/

@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pillow
+torch
+torchvision
+ultralytics
+firebase-admin
+faiss-cpu
+python-multipart

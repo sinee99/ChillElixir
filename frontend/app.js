@@ -1,6 +1,9 @@
+// frontend/App.js
+
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
 import AnalyzeScreen from './screens/AnalyzeScreen';
 import MatchScreen from './screens/MatchScreen';
 

@@ -42,21 +42,27 @@ LostPet/
 ## 🚀 실행 방법
 
 ### 1. FastAPI 백엔드 실행
-```bash
+```
+bash
 cd backend
 pip install -r requirements.txt
 uvicorn main:app --reload
+```
 2. React Native 프론트 실행 (Expo)
+```
 bash
 
 cd frontend
 npm install
 npm start
+```
 3. 모델 학습 (선택)
+```
 bash
 
 python model_training/train_species.py
 python model_training/train_nose_classifier.py
+```
 📮 API 엔드포인트 요약
 메서드	경로	설명
 POST	/analyze	강아지 사진 분석 및 Firebase 등록

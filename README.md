@@ -63,33 +63,42 @@ bash
 python model_training/train_species.py
 python model_training/train_nose_classifier.py
 ```
+
+---
+
 📮 API 엔드포인트 요약
-메서드	경로	설명
-POST	/analyze	강아지 사진 분석 및 Firebase 등록
-POST	/match	유실견 코 이미지 → 유사도 검색
-GET	/admin/list	전체 등록 강아지 조회
-DELETE	/admin/delete/{uid}	특정 강아지 데이터 삭제
+| 메서드      | 경로                    | 설명                      |
+| -------- | --------------------- | ----------------------- |
+| `POST`   | `/analyze`            | 강아지 사진 분석 및 Firebase 등록 |
+| `POST`   | `/match`              | 유실견 코 이미지 → 유사도 검색      |
+| `GET`    | `/admin/list`         | 전체 등록 강아지 조회            |
+| `DELETE` | `/admin/delete/{uid}` | 특정 강아지 데이터 삭제           |
+
+---
 
 🧠 사용 기술
-💡 YOLOv8 (Ultralytics)
+*💡 YOLOv8 (Ultralytics)
 
-🧠 PyTorch (ResNet 기반 분류기)
+*🧠 PyTorch (ResNet 기반 분류기)
 
-☁️ Firebase Storage / Firestore
+*☁️ Firebase Storage / Firestore
 
-⚡ FastAPI
+*⚡ FastAPI
 
-📱 React Native (Expo)
+*📱 React Native (Expo)
 
-🧭 FAISS (코 임베딩 유사도 검색)
+*🧭 FAISS (코 임베딩 유사도 검색)
+
+---
 
 🔐 Firebase 설정
-backend/firebase_key.json 파일에 Firebase Admin SDK 키 필요
+*backend/firebase_key.json 파일에 Firebase Admin SDK 키 필요
 
-Storage 버킷 주소는 your-bucket-name.appspot.com으로 수정
+*Storage 버킷 주소는 your-bucket-name.appspot.com으로 수정
 
-이미지 URL은 .public_url을 통해 접근 가능
+*이미지 URL은 .public_url을 통해 접근 가능
 
+---
 📢 기여/참여
-이 프로젝트는 누구나 포크하여 사용할 수 있습니다.
-아이디어, 이슈, 기능 제안 또는 PR 기여를 환영합니다!
+*이 프로젝트는 누구나 포크하여 사용할 수 있습니다.
+*아이디어, 이슈, 기능 제안 또는 PR 기여를 환영합니다!

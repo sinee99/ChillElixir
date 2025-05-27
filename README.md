@@ -77,28 +77,30 @@ python model_training/train_nose_classifier.py
 ---
 
 🧠 사용 기술
-*💡 YOLOv8 (Ultralytics)
 
-*🧠 PyTorch (ResNet 기반 분류기)
+* 💡 YOLOv8 (Ultralytics)
 
-*☁️ Firebase Storage / Firestore
+* 🧠 PyTorch (ResNet 기반 분류기)
 
-*⚡ FastAPI
+* ☁️ Firebase Storage / Firestore
 
-*📱 React Native (Expo)
+* ⚡ FastAPI
 
-*🧭 FAISS (코 임베딩 유사도 검색)
+* 📱 React Native (Expo)
+
+* 🧭 FAISS (코 임베딩 유사도 검색)
 
 ---
 
 🔐 Firebase 설정
-*backend/firebase_key.json 파일에 Firebase Admin SDK 키 필요
 
-*Storage 버킷 주소는 your-bucket-name.appspot.com으로 수정
+* backend/firebase_key.json 파일에 Firebase Admin SDK 키 필요
 
-*이미지 URL은 .public_url을 통해 접근 가능
+* Storage 버킷 주소는 your-bucket-name.appspot.com으로 수정
+
+* 이미지 URL은 .public_url을 통해 접근 가능
 
 ---
 📢 기여/참여
-*이 프로젝트는 누구나 포크하여 사용할 수 있습니다.
-*아이디어, 이슈, 기능 제안 또는 PR 기여를 환영합니다!
+* 이 프로젝트는 누구나 포크하여 사용할 수 있습니다.
+* 아이디어, 이슈, 기능 제안 또는 PR 기여를 환영합니다!

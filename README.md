@@ -1,117 +1,68 @@
-# 🐶 DogIdentifierProject
+# 🐾 Dog Identifier Project
 
-강아지 유실 방지를 위한 종/코 분석 및 식별 시스템. YOLOv8 + 분류기 + 비문(코) 임베딩을 기반으로 하며, React Native 앱과 FastAPI 백엔드로 구성됨.
-
----
-
-## 📦 전체 폴더 구조
-
-```
-DogIdentifierProject/
-├── frontend/            # React Native (Expo 기반)
-├── backend/             # FastAPI 서버 (YOLO + 분류기 + Firebase)
-├── dataset/             # 학습용 데이터셋 (종 / 코)
-├── model_training/      # 학습 코드 (train_species.py, train_nose_classifier.py 등)
-├── test_images/         # 테스트 이미지 샘플
-└── README.md            # 이 문서
-```
+YOLOv8, ResNet, Firebase, FastAPI, React Native를 활용한 **반려견 유실방지 및 식별 시스템**입니다.  
+강아지의 **외형(종/색상/코 특징 등)**을 등록하고, 유실견 발생 시 코 사진을 기반으로 **유사 개체를 탐색**할 수 있습니다.
 
 ---
 
-## 🚀 기능 개요
+## 🔧 기능 요약
 
-### 1. FastAPI 백엔드
-
-* YOLOv8로 강아지 탐지 및 crop
-* 종 분류기 (ResNet18)
-* 코 특징 분류기 (다중 라벨)
-* 비문 임베딩 추출 (ResNet18 기반)
-* Firebase Storage/Firestore 저장
-* FAISS 유사도 검색 (분실견 찾기)
-
-### 2. React Native 프론트엔드
-
-* Expo 기반 이미지 업로드/분석
-* 분석 결과 출력 (종 + 코 특징)
-* 분실견 탐지 기능 (/match)
-
-### 3. 모델 학습
-
-* 종 분류기 (`train_species.py`)
-* 코 특징 분류기 (`train_nose_classifier.py`)
-* 자동 데이터 분할 (`split_dataset.py`)
+- ✅ YOLOv8으로 강아지 자동 감지 및 Crop
+- ✅ ResNet 기반 종 분류기 (Shiba Inu, Maltese 등)
+- ✅ 코 특징 다중 분류기 (색상, 크기, 상처 등)
+- ✅ Firebase Storage에 이미지 업로드
+- ✅ Firestore에 메타데이터 저장
+- ✅ FAISS 임베딩 유사도 검색으로 유실견 추론
 
 ---
 
-## ✅ 실행 순서
+## 🚀 실행 방법
 
-### 1. 종/코 이미지 준비 후 분할
 
-```
-python model_training/split_dataset.py
-```
+### 1. 환경 준비
 
-### 2. 모델 학습
-
-```
-python model_training/train_species.py
-python model_training/train_nose_classifier.py
-```
-
-### 3. 백엔드 실행 (backend 디렉토리)
-
-```
+```bash
+# FastAPI 백엔드
+cd backend
 pip install -r requirements.txt
 uvicorn main:app --reload
-```
-
-### 4. 프론트 실행 (frontend 디렉토리)
-
-```
+# React Native 프론트엔드
+cd frontend
 npm install
 npm start
-```
 
----
 
-## 🔐 Firebase 설정
+### 📁 프로젝트 구조
+DogIdentifierProject/
+├── frontend/ # React Native (Expo)
+├── backend/ # FastAPI + YOLO + Firebase
+├── dataset/ # 학습용 데이터셋
+├── model_training/ # 모델 학습 스크립트
+└── README.md
 
-* `backend/firebase_key.json`에 Firebase Admin SDK 키 저장
-* Storage 버킷: `your-bucket-name.appspot.com` 으로 변경
+📮 API 문서
+메서드	경로	설명
+POST	/analyze	강아지 이미지 분석 (종/코 특징)
+POST	/match	코 이미지로 유사 개체 검색
+GET	/admin/list	등록된 모든 강아지 조회
+DELETE	/admin/delete/{uid}	특정 개체 삭제
 
----
+🧠 사용 기술
+🔍 YOLOv8 (Ultralytics)
 
-## 📮 API 요약
+🧠 PyTorch (ResNet)
 
-### POST `/analyze`
+🔥 Firebase (Storage + Firestore)
 
-* 입력: 이미지 파일
-* 출력: 종 + 코 특징 + 이미지 URL + UID 저장
+⚙️ FastAPI
 
-### POST `/match`
+📱 React Native (Expo)
 
-* 입력: 코 이미지
-* 출력: 유사 UID 리스트
+🧭 FAISS (유사도 검색)
 
-### GET `/admin/list`
+📝 라이센스
+MIT License © 2024 [당신의 GitHub 이름]
 
-* 등록된 모든 강아지 조회
-
-### DELETE `/admin/delete/{uid}`
-
-* 특정 개체 삭제
-
----
-
-## 🧠 개발자 참고
-
-* 프론트에서 서버 접속 시: PC 로컬 IP 주소로 접속 (예: `http://192.168.0.5:8000`)
-* 모바일 Expo Go 앱에서 QR 스캔 → 즉시 사용 가능
-* 모델 학습 시 `dataset/species_raw` 와 `dataset/nose_raw` 폴더에 종별 이미지 정리 필요
-
----
-
-## ✨ 기여
-
-* 기획 및 설계: 사용자
-* 기술 구현: React Native, FastAPI, Firebase, PyTorch, FAISS, YOLOv8
+🙋‍♀️ 기여
+이 프로젝트는 누구든 자유롭게 포크/수정할 수 있습니다.
+피드백, 버그 제보, 기능 추가는 언제든 환영합니다!

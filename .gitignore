@@ -15,7 +15,7 @@ __pycache__/
 .env
 firebase_key.json
 tmp_*.jpg
-backend/firebase_key.json
+
 
 # React Native / Expo
 node_modules/
@@ -38,3 +38,4 @@ dataset/nose/*
 !dataset/species/README.md
 !dataset/nose/README.md
 model_training/__pycache__/
+backend/firebase_key.json

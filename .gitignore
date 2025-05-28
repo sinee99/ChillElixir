@@ -15,6 +15,7 @@ __pycache__/
 .env
 firebase_key.json
 tmp_*.jpg
+backend/firebase_key.json
 
 # React Native / Expo
 node_modules/

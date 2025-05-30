@@ -26,7 +26,7 @@ YOLOv8, PyTorch, Firebase, FastAPI, React Native 기반으로,
 ---
 
 ## 📁 프로젝트 구조
-
+```
 LostPet/
 ├── frontend/ # React Native (Expo 기반 모바일 앱)
 ├── backend/ # FastAPI 서버 + YOLO + Firebase + FAISS
@@ -34,7 +34,7 @@ LostPet/
 ├── dataset/ # 학습용 이미지 데이터셋
 ├── test_images/ # 테스트 이미지 샘플
 └── README.md
-
+```
 
 
 ---

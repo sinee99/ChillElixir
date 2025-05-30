@@ -1,4 +1,4 @@
-# backend/main.py
+# ✅ main.py (최종 버전: 종 분류 + 코 임베딩 저장/검색)
 
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,7 +9,7 @@ from ultralytics import YOLO
 from firebase_admin import credentials, initialize_app, storage, firestore
 import faiss
 
-# 초기화
+# 앱 및 미들웨어 초기화
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -19,40 +19,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Firebase
+# Firebase 초기화
 cred = credentials.Certificate("firebase_key.json")
 initialize_app(cred, {"storageBucket": "your-bucket-name.appspot.com"})
 db = firestore.client()
 
-# 모델
+# 모델 및 디바이스 설정
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 yolo_model = YOLO("yolov8n.pt")
-
-# 종 분류기
 species_model = models.resnet18()
-species_model.fc = torch.nn.Linear(species_model.fc.in_features, 3)
+species_model.fc = torch.nn.Linear(species_model.fc.in_features, 119)  # 119 클래스 기준으로 수정
 species_model.load_state_dict(torch.load("dog_species_classifier.pt", map_location=device))
 species_model.eval().to(device)
-SPECIES_CLASSES = ['maltese', 'shiba_inu', 'golden_retriever']
 
-# 코 특징 분류기
-class NoseFeatureClassifier(torch.nn.Module):
-    def __init__(self, n=5):
-        super().__init__()
-        base = models.resnet18()
-        self.model = torch.nn.Sequential(
-            *list(base.children())[:-1],
-            torch.nn.Flatten(),
-            torch.nn.Linear(base.fc.in_features, n),
-            torch.nn.Sigmoid()
-        )
-    def forward(self, x):
-        return self.model(x)
-
-nose_model = NoseFeatureClassifier()
-nose_model.load_state_dict(torch.load("dog_nose_classifier.pt", map_location=device))
-nose_model.eval().to(device)
-NOSE_FEATURES = ["dark_skin", "large_nostril", "right_scar", "pink_tone", "triangular"]
+# 클래스 목록 불러오기
+with open("class_names.txt", "r") as f:
+    target_classes = [line.strip() for line in f.readlines()]
 
 # 전처리
 transform = transforms.Compose([
@@ -60,22 +42,23 @@ transform = transforms.Compose([
     transforms.ToTensor(),
 ])
 
-# 임베딩 추출기
+# 임베딩 모델
 class Embedder(torch.nn.Module):
     def __init__(self):
         super().__init__()
         self.feature = torch.nn.Sequential(*list(models.resnet18(pretrained=True).children())[:-1])
+
     def forward(self, x):
         x = self.feature(x)
         return x.view(x.size(0), -1)
 
 embedder = Embedder().to(device).eval()
 
-# FAISS
+# FAISS 설정
 index = faiss.IndexFlatL2(512)
-embedding_map = {}  # idx -> UID
+embedding_map = {}  # idx -> UID 매핑
 
-
+# 🐶 분석 엔드포인트
 @app.post("/analyze")
 async def analyze_dog(file: UploadFile = File(...)):
     img_bytes = await file.read()
@@ -83,8 +66,7 @@ async def analyze_dog(file: UploadFile = File(...)):
     np_img = np.array(image)
 
     results = yolo_model(np_img)
-    boxes = [b for b in results[0].boxes if int(b.cls[0]) == 16]
-
+    boxes = [b for b in results[0].boxes if int(b.cls[0]) == 16]  # class 16 = dog
     if len(boxes) != 1:
         return {"error": f"강아지 수: {len(boxes)}. 1마리만 포함된 이미지를 업로드해주세요."}
 
@@ -95,6 +77,7 @@ async def analyze_dog(file: UploadFile = File(...)):
     box = [max(0, cx - side//2), max(0, cy - side//2), min(image.width, cx + side//2), min(image.height, cy + side//2)]
     dog_crop = image.crop(box)
 
+    # 코 영역 crop
     nose_cx, nose_cy = cx, y2 - int(h * 0.2)
     nose_side = int(min(w, h) * 0.2)
     nose_box = [max(0, nose_cx - nose_side//2), max(0, nose_cy - nose_side//2), min(image.width, nose_cx + nose_side//2), min(image.height, nose_cy + nose_side//2)]
@@ -104,26 +87,25 @@ async def analyze_dog(file: UploadFile = File(...)):
     dog_crop.save("tmp_dog.jpg")
     nose_crop.save("tmp_nose.jpg")
 
+    # Firebase 업로드
     bucket = storage.bucket()
     blob1 = bucket.blob(f"cropped/{uid}_dog.jpg")
     blob1.upload_from_filename("tmp_dog.jpg")
     blob2 = bucket.blob(f"cropped/{uid}_nose.jpg")
     blob2.upload_from_filename("tmp_nose.jpg")
 
+    # 종 분류
     species_tensor = transform(dog_crop).unsqueeze(0).to(device)
-    species = SPECIES_CLASSES[species_model(species_tensor).argmax(1).item()]
+    species = target_classes[species_model(species_tensor).argmax(1).item()]
 
+    # 코 임베딩 저장
     nose_tensor = transform(nose_crop).unsqueeze(0).to(device)
-    nose_probs = nose_model(nose_tensor)[0].cpu().numpy()
-    features = [NOSE_FEATURES[i] for i, v in enumerate(nose_probs) if v > 0.5]
-
     emb = embedder(nose_tensor).cpu().numpy()
     index.add(emb)
     embedding_map[index.ntotal - 1] = uid
 
     db.collection("dogs").document(uid).set({
         "species": species,
-        "nose_features": features,
         "dog_img_url": blob1.public_url,
         "nose_img_url": blob2.public_url
     })
@@ -131,12 +113,11 @@ async def analyze_dog(file: UploadFile = File(...)):
     return {
         "uid": uid,
         "species": species,
-        "nose_features": features,
         "dog_img_url": blob1.public_url,
         "nose_img_url": blob2.public_url
     }
 
-
+# 🔍 유실견 검색
 @app.post("/match")
 async def match_dog(file: UploadFile = File(...)):
     img_bytes = await file.read()
@@ -147,7 +128,7 @@ async def match_dog(file: UploadFile = File(...)):
     matches = [embedding_map[i] for i in I[0] if i in embedding_map]
     return {"matches": matches}
 
-
+# 🔧 관리자 API
 @app.get("/admin/list")
 def list_dogs():
     docs = db.collection("dogs").stream()

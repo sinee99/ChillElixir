@@ -8,8 +8,8 @@ from tqdm import tqdm
 
 # 하이퍼파라미터
 BATCH_SIZE = 32
-EPOCHS = 10
-LEARNING_RATE = 1e-4
+EPOCHS = 100
+LEARNING_RATE = 1e-5
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # 전처리

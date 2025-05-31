@@ -1,0 +1,39 @@
+{
+  "expo": {
+    "name": "LostPet",
+    "slug": "lostpet-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "반려견 사진을 촬영하거나 선택하기 위해 사진 접근 권한이 필요합니다.",
+          "cameraPermission": "반려견 사진을 촬영하기 위해 카메라 권한이 필요합니다."
+        }
+      ]
+    ]
+  }
+} 

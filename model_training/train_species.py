@@ -6,6 +6,9 @@ from torchvision import datasets, transforms, models
 from sklearn.metrics import accuracy_score
 from tqdm import tqdm
 
+print("CUDA 사용 가능 여부:", torch.cuda.is_available())
+print("사용 가능한 GPU 개수:", torch.cuda.device_count())
+print("GPU 이름:", torch.cuda.get_device_name(0) if torch.cuda.is_available() else "사용 불가")
 # 하이퍼파라미터
 BATCH_SIZE = 32
 EPOCHS = 100

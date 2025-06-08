@@ -1,0 +1,13 @@
+ultralytics
+opencv-python
+pillow
+firebase-admin
+python-dotenv
+fastapi
+uvicorn
+python-multipart
+aiofiles
+torch
+torchvision
+numpy
+requests

@@ -1,0 +1,6 @@
+# YOLOv8 Classification Dataset Configuration
+path: .  # dataset root dir
+train: dataset/species/train  # train images (relative to 'path')
+val: dataset/species/val  # val images (relative to 'path')
+
+# Class names (optional, will be auto-detected from folder names)

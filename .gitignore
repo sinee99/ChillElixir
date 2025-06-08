@@ -1,41 +1,298 @@
+# =============================================
 # Python
+# =============================================
 __pycache__/
 *.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# =============================================
+# Virtual Environments
+# =============================================
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.conda/
+Pipfile.lock
+
+# =============================================
+# Machine Learning & AI Models
+# =============================================
 *.pkl
 *.pt
+*.pth
 *.h5
+*.hdf5
+*.onnx
+*.tflite
+*.pb
+*.model
+*.weights
+*.joblib
+runs/
+wandb/
+mlruns/
+.neptune/
+checkpoints/
+models/
+weights/
 
-# Jupyter
+# =============================================
+# Jupyter Notebook
+# =============================================
 .ipynb_checkpoints
+*/.ipynb_checkpoints/*
+profile_default/
+ipython_config.py
 
-# Logs
+# =============================================
+# Logs & Temporary Files
+# =============================================
 *.log
-
-# FastAPI
-.env
-firebase_key.json
+logs/
+log/
+*.tmp
+*.temp
+tmp/
+temp/
 tmp_*.jpg
+tmp_*.png
+cache/
+.cache/
 
+# =============================================
+# Environment & Configuration
+# =============================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+config.json
+secrets.json
+firebase_key.json
+firebase-credentials.json
+**/firebase-credentials.json
+**/firebase_key.json
 
-# React Native / Expo
+# =============================================
+# FastAPI & Backend
+# =============================================
+.pytest_cache/
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# =============================================
+# Docker
+# =============================================
+.dockerignore
+docker-compose.override.yml
+.docker/
+
+# =============================================
+# Node.js & Frontend
+# =============================================
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# =============================================
+# React Native / Expo
+# =============================================
 .expo/
 .expo-shared/
 *.apk
+*.aab
+*.ipa
 *.keystore
-*.gradle
+*.p8
+*.p12
+*.mobileprovision
+android/app/debug.keystore
+ios/Pods/
 
+# =============================================
+# Build outputs
+# =============================================
+build/
+dist/
+out/
+*.tgz
+*.tar.gz
+
+# =============================================
+# Operating System
+# =============================================
 # macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
 
-# IDE
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.nfs*
+
+# =============================================
+# IDE & Editors
+# =============================================
 .vscode/
 .idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+.project
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
 
-# Dataset & Model Checkpoints
+# =============================================
+# Database
+# =============================================
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+
+# =============================================
+# Dataset & Large Files
+# =============================================
 dataset/species/*
 dataset/nose/*
 !dataset/species/README.md
 !dataset/nose/README.md
+datasets/*/
+data/
+images/
+*.zip
+*.rar
+*.7z
+*.tar
+
+# =============================================
+# Model Training Outputs
+# =============================================
 model_training/__pycache__/
-backend/firebase_key.json
+model_training/runs/
+model_training/wandb/
+model_training/outputs/
+model_training/checkpoints/
+model_training/logs/
+
+# =============================================
+# Dog Analysis Module
+# =============================================
+dog_analysis_module/__pycache__/
+dog_analysis_module/logs/
+dog_analysis_module/.env
+dog_analysis_module/firebase-credentials.json
+dog_analysis_module/dog_analysis.log
+dog_analysis_module/tmp/
+
+# =============================================
+# Testing
+# =============================================
+.pytest_cache/
+test_output/
+coverage_html_report/
+.tox/
+.nox/
+
+# =============================================
+# Documentation
+# =============================================
+docs/_build/
+.readthedocs.yml
+
+# =============================================
+# Cloud & Deployment
+# =============================================
+.serverless/
+.terraform/
+*.tfstate
+*.tfplan
+.pulumi/
+
+# =============================================
+# Security & Keys
+# =============================================
+*.pem
+*.key
+*.crt
+*.p12
+*.p8
+id_rsa*
+id_dsa*
+id_ecdsa*
+id_ed25519*
+known_hosts
+authorized_keys
+
+# =============================================
+# Backup Files
+# =============================================
+*.backup
+*.bak
+*.old
+*.orig

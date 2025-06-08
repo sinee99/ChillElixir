@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  dog-analyzer:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      # 모델 파일을 호스트에서 컨테이너로 마운트
+      - "../model_training/DogCharacteristic/runs/detect/train/weights/best.pt:/app/model/best.pt:ro"
+      # Firebase 인증 파일 마운트 (실제 경로로 수정 필요)
+      - "./firebase-credentials.json:/app/firebase-credentials.json:ro"
+      # 로그 파일을 위한 볼륨
+      - "./logs:/app/logs"
+    environment:
+      - FIREBASE_CREDENTIALS_PATH=/app/firebase-credentials.json
+      - FIREBASE_DATABASE_URL=https://your-project.firebaseio.com/
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - CONFIDENCE_THRESHOLD=0.5
+    env_file:
+      - .env
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s 

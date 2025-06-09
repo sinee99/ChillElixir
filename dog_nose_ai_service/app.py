@@ -33,7 +33,7 @@ class DogNoseAIService:
         """YOLOv5와 Siamese 모델 로드"""
         try:
             # YOLOv5 모델 로드 (강아지 코 탐지)
-            model_path = '/app/models/yolo_best.pt'
+            model_path = './models/yolo_best.pt'
             if os.path.exists(model_path):
                 self.yolo_model = torch.hub.load('ultralytics/yolov5', 'custom', 
                                                path=model_path, device=self.device)
@@ -46,10 +46,10 @@ class DogNoseAIService:
             # Siamese Neural Network 모델 로드 (비문 인식)
             # 사용 가능한 Siamese 모델들 확인
             siamese_models = {
-                'original': '/app/models/siamese_original.h5',
-                'canny': '/app/models/siamese_canny.h5', 
-                'laplacian': '/app/models/siamese_laplacian.h5',
-                'sobel': '/app/models/siamese_sobel.h5'
+                'original': './models/siamese_original.h5',
+                'canny': './models/siamese_canny.h5', 
+                'laplacian': './models/siamese_laplacian.h5',
+                'sobel': './models/siamese_sobel.h5'
             }
             
             self.available_siamese_models = {}

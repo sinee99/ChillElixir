@@ -1,0 +1,54 @@
+{
+  "n02088094_392.jpg": {
+    "dog-size-classifier": {
+      "success": false,
+      "error": "분류 실패: 409 - {\"message\":\"Function must have at least 2 labels to be invoked\"}"
+    },
+    "dog-hair-type-classifier": {
+      "success": false,
+      "error": "분류 실패: 409 - {\"message\":\"Function must have at least 2 labels to be invoked\"}"
+    },
+    "dog-ear-type-classifier": {
+      "success": false,
+      "error": "분류 실패: 409 - {\"message\":\"Function must have at least 2 labels to be invoked\"}"
+    },
+    "dog-snout-type-classifier": {
+      "success": false,
+      "error": "분류 실패: 409 - {\"message\":\"Function must have at least 2 labels to be invoked\"}"
+    },
+    "dog-color-classifier": {
+      "success": false,
+      "error": "분류 실패: 409 - {\"message\":\"Function must have at least 2 labels to be invoked\"}"
+    },
+    "dog-general-classifier": {
+      "success": false,
+      "error": "분류 실패: 409 - {\"message\":\"Function must have at least 2 labels to be invoked\"}"
+    }
+  },
+  "n02088094_649.jpg": {
+    "dog-size-classifier": {
+      "success": false,
+      "error": "분류 실패: 409 - {\"message\":\"Function must have at least 2 labels to be invoked\"}"
+    },
+    "dog-hair-type-classifier": {
+      "success": false,
+      "error": "분류 실패: 409 - {\"message\":\"Function must have at least 2 labels to be invoked\"}"
+    },
+    "dog-ear-type-classifier": {
+      "success": false,
+      "error": "분류 실패: 409 - {\"message\":\"Function must have at least 2 labels to be invoked\"}"
+    },
+    "dog-snout-type-classifier": {
+      "success": false,
+      "error": "분류 실패: 409 - {\"message\":\"Function must have at least 2 labels to be invoked\"}"
+    },
+    "dog-color-classifier": {
+      "success": false,
+      "error": "분류 실패: 409 - {\"message\":\"Function must have at least 2 labels to be invoked\"}"
+    },
+    "dog-general-classifier": {
+      "success": false,
+      "error": "분류 실패: 409 - {\"message\":\"Function must have at least 2 labels to be invoked\"}"
+    }
+  }
+}
